@@ -12,10 +12,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class UserChannelPool {
+    // key:用户名， value：channel
     public static Map<String, Channel> channelMap = new ConcurrentHashMap<>();
+    // netty提供的对websocketServer中所有channel的管理
     public static ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
 
+    /**
+     * 发消息给所有用户
+     * @param objectResponseResult
+     */
     public static void sendToAllUser(ObjectResponseResult objectResponseResult) {
         for (Channel channel : channels) {
             sendMessage(channel, objectResponseResult);
@@ -23,6 +29,11 @@ public class UserChannelPool {
         }
     }
 
+    /**
+     * 发消息给一个用户
+     * @param user
+     * @param objectResponseResult
+     */
     public static void sendToUser(String user, ObjectResponseResult objectResponseResult) {
         Channel channel = channelMap.get(user);
         if (channel != null) {
@@ -30,6 +41,11 @@ public class UserChannelPool {
         }
     }
 
+    /**
+     * 发消息给当前用户
+     * @param channel
+     * @param objectResponseResult
+     */
     public static void sendMessage(Channel channel, ObjectResponseResult objectResponseResult) {
         channel.write(resultToFrame(objectResponseResult));
         channel.flush();

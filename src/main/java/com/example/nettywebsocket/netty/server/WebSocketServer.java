@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class WebSocketServer {
 
     public void start(int port) {
+        // 服务端需要2个线程组  boss处理客户端连接  work进行客服端连接之后的处理
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
